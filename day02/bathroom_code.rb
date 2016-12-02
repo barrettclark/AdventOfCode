@@ -1,18 +1,16 @@
 class BathroomCode
-  GRID = [
-    [-1,  1], # 1
-    [ 0,  1], # 2
-    [ 1,  1], # 3
-    [-1,  0], # 4
-    [ 0,  0], # 5
-    [ 1,  0], # 6
-    [-1, -1], # 7
-    [ 0, -1], # 8
-    [ 1, -1]  # 9
+  KEYPAD = [
+    [nil, nil,   1, nil, nil],
+    [nil,   2,   3,   4, nil],
+    [  5,   6,   7,   8,   9],
+    [nil, "A", "B", "C", nil],
+    [nil, nil, "D", nil, nil]
   ]
 
   def initialize
-    @coordinate = [0, 0]
+    # start at the 5 on the keypad
+    # coordinate is [row index, column index]
+    @coordinate = [2, 0]
     @code = []
   end
 
@@ -27,39 +25,56 @@ class BathroomCode
         when "R"; right!
         end
       end
-      @code << GRID.index(@coordinate) + 1
+      @code << button(row, column)
     end
-    p @code.join
+    puts code
   end
 
   private
 
-  def x
+  def code
+    @code.join
+  end
+
+  def button(_row, _column)
+    KEYPAD[_row][_column]
+  end
+
+  def row
     @coordinate[0]
   end
 
-  def y
+  def column
     @coordinate[1]
   end
 
+  def boundary?(direction)
+    case direction
+    when "U"; row == 0 || button(row-1, column).nil?
+    when "D"; row == 4 || button(row+1, column).nil?
+    when "R"; column == 4 || button(row, column+1).nil?
+    when "L"; column == 0 || button(row, column-1).nil?
+    end
+  end
+
   def up!
-    # Y + 1
-    @coordinate = [x, y+1] unless y == 1
+    # column + 1
+    @coordinate = [row-1, column] unless boundary?("U")
   end
 
   def down!
-    # Y - 1
-    @coordinate = [x, y-1] unless y == -1
+    # column - 1
+    @coordinate = [row+1, column] unless boundary?("D")
   end
 
   def right!
-    # X + 1
-    @coordinate = [x+1, y] unless x == 1
+    # row + 1
+    @coordinate = [row, column+1] unless boundary?("R")
   end
 
   def left!
-    # X - 1
-    @coordinate = [x-1, y] unless x == -1
+    # row - 1
+    @coordinate = [row, column-1] unless boundary?("L")
   end
 end
 
