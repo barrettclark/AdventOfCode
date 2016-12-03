@@ -4,14 +4,19 @@ class TriangleCheck
   end
 
   def parse_file
-    File.foreach('input.txt') { |line| parse_line(line) }
+    File.foreach('input.txt').each_slice(3) do |three_lines|
+      parse_lines(three_lines)
+    end
     puts @valid_count
   end
 
-  def parse_line(line)
-    m = line.match(/(\d+)\s*(\d+)\s*(\d+)/)
-    triangle = Triangle.new(m[1], m[2], m[3])
-    @valid_count += 1 if triangle.valid?
+  def parse_lines(lines)
+    matches = lines.map { |line| line.match(/(\d+)\s*(\d+)\s*(\d+)/) }
+    1.upto(lines.count) do |i|
+      s1, s2, s3 = matches.map { |m| m[i] }
+      triangle = Triangle.new(s1, s2, s3)
+      @valid_count += 1 if triangle.valid?
+    end
   end
 end
 
