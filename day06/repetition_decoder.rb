@@ -10,6 +10,6 @@ File.foreach(FILENAME) do |line|
   end
 end
 letters = arr.map do |column|
-  column.sort_by { |k,v| -v }.first.first
+  column.sort_by { |k,v| v }.first.first
 end
 p letters.join
