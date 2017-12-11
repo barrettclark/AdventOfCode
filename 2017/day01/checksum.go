@@ -14,19 +14,22 @@ func check(e error) {
 }
 
 func main() {
-	dat, err := ioutil.ReadFile("input1.txt")
+	dat, err := ioutil.ReadFile("input2.txt")
 	check(err)
 	line := strings.TrimSuffix(string(dat), "\n")
 	chars := strings.Split(line, "")
+	length := len(chars)
+	offset := length / 2
 	checksum := 0
 	nextNumber := -1
+	nextPosition := -1
 	for i, char := range chars {
 		currentNumber, _ := strconv.Atoi(char)
-		if i < len(line)-1 {
-			nextNumber, _ = strconv.Atoi(chars[i+1])
-		} else {
-			nextNumber, _ = strconv.Atoi(chars[0])
+		nextPosition = offset + i
+		if nextPosition > length-1 {
+			nextPosition = nextPosition - length
 		}
+		nextNumber, _ = strconv.Atoi(chars[nextPosition])
 		if currentNumber == nextNumber {
 			checksum += nextNumber
 		}
